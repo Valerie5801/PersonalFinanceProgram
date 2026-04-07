@@ -234,5 +234,30 @@ def logout(username):
             case _:
                 continue
 
-#yen to Euro
-#yen/usd*euro
+
+import json
+
+
+
+def dicttstr(dictionary):
+    strin=json.dumps(dictionary)
+    string=strin.replace(",","?")
+    return string
+
+def strtdict(string):
+    strin=string.replace("?",",")
+    dictionary=json.loads(strin)
+    return dictionary
+
+def savdict(dictionary):
+    diction=dicttstr(dictionary)
+    with open('documents/Users.csv', mode='r') as f:
+        rows=list(csv.reader(f))
+        usernames=[]
+        for row in rows:
+            usernames.append(row[0])
+        indx=usernames.index(username)
+    rows[indx][2]=diction
+    with open('documents/Users.csv', mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(rows)
