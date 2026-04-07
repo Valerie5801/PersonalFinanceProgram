@@ -83,5 +83,3 @@ def currency_conversion():
     end_money = conversions[chosen_conversion] * start_money
 
     print(f"{start_money} {print_first} is {end_money} {print_second}.")
-
-currency_conversion()
