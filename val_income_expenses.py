@@ -96,8 +96,8 @@ def set_expenses():
         else:
             print("Please type it as a whole number.")
 
-    for i in range(total_expense_groups):
-        expense_name = input(f"What is the name of expense group {i}?: ")
+    for i in range(int(total_expense_groups)-1):
+        expense_name = input(f"What is the name of expense group {i+1}?: ")
 
         while True:
             expense_interval = input("What time interval would you like to track this expense group?(day/month/year): ").lower().strip()
@@ -121,11 +121,3 @@ def set_expenses():
     print("Here's all your expenses:")
     all_expenses.show_expenses()
     return all_expenses
-
-
-print("Testing currency conversion...")
-currency_conversion()
-print("\nTesting income/expenses...")
-set_income()
-print("\n")
-set_expenses()
