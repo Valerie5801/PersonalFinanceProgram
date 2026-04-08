@@ -1,5 +1,5 @@
 #VY 2nd Income and Expenses
-from val_currency_conversion import validate_input #temporary, get from helper functions once it's there
+from budgetkeeper import validate_input #temporary, get from helper functions once it's there
 
 class Income:
     def __init__(self, given_time, given_amount):
@@ -35,6 +35,10 @@ class Expenses:
         else:
             print(f"That expense doesn't exist.")
 
+    def show_expenses(self):
+        for expense in self.all_expenses:
+            print(expense)
+
 
 class Expense:
     def __init__(self, given_time, given_amount, given_source):
@@ -52,6 +56,9 @@ class Expense:
 
     def edit_source(self, new_source):
         self.expense_info["source"] = new_source
+    
+    def __str__(self):
+        return f"Category {self.expense_info["source"]} is ${self.expense_info["amount"]} per {self.expense_info["time"]}.\n"
 
 
 
@@ -64,7 +71,7 @@ def set_income():
             break
     
     while True:
-        income_amount = input("What time interval do you recieve your income/like to track it?(daily/monthly/yearly): ")
+        income_amount = input("What's your income amount (in the time interval you typed in)?: ")
         check_income = validate_input(income_amount, "float")
         if check_income:
             income_amount = float(income_amount)
@@ -78,19 +85,37 @@ def set_income():
 
 
 def set_expenses():
-    all_expenses = []
+    all_expenses = Expenses()
     while True:
-        income_interval = input("What time interval do you recieve your income/like to track it?(day/month/year): ").lower().strip()
-        if income_interval != "day" and income_interval != "month" != "year":
-            print('Please type in either "daily", "month", or "year"')
-        else:
+        total_expense_groups = input("How may expense groups do you have?(type as a whole number): ")
+        check_num = validate_input(total_expense_groups, "int")
+        if check_num:
+            check_num = int(check_num)
             break
+        else:
+            print("Please type it as a whole number.")
+
+    for i in range(total_expense_groups):
+        expense_name = input(f"What is the name of expense group {i}?: ")
+
+        while True:
+            expense_interval = input("What time interval would you like to track this expense group?(day/month/year): ").lower().strip()
+            if expense_interval != "day" and expense_interval != "month" != "year":
+                print('Please type in either "daily", "month", or "year"')
+            else:
+                break
+        
+        while True:
+            expense_amount = input("What's your expense value (in the time interval you typed in)?: ")
+            check_expense = validate_input(expense_amount, "float")
+            if check_expense:
+                expense_amount = float(expense_amount)
+                break
+            else:
+                print("That isn't a number.")
+
+        new_expense_group = Expense(expense_interval, expense_amount, expense_name)
+        all_expenses.add_expense(new_expense_group)
     
-    while True:
-        income_amount = input("What time interval do you recieve your income/like to track it?(daily/monthly/yearly): ")
-        check_income = validate_input(income_amount, "float")
-        if check_income:
-            income_amount = float(income_amount)
-            break
-        else:
-            print("That isn't a number.")
+    print("Here's all your expenses:")
+    all_expenses.show_expenses()
