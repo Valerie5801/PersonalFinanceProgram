@@ -35,9 +35,13 @@ def menu():
                 match inp:
                     case '1':
                         username=login()
+                        dictionary= puldict(username)
                         break
                     case '2':
                         username=register()
+                        
                         break
                     case _:
                         continue
+
+menu()

@@ -249,7 +249,7 @@ def strtdict(string):
     dictionary=json.loads(strin)
     return dictionary
 
-def savdict(dictionary):
+def savdict(username, dictionary):
     diction=dicttstr(dictionary)
     with open('documents/Users.csv', mode='r') as f:
         rows=list(csv.reader(f))
@@ -261,3 +261,23 @@ def savdict(dictionary):
     with open('documents/Users.csv', mode='w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
+
+def puldict(username):
+    with open('documents/Users.csv', mode='r') as f:
+        rows=list(csv.reader(f))
+        usernames=[]
+        for row in rows:
+            usernames.append(row[0])
+        indx=usernames.index(username)
+        dictionary=rows[indx][2]
+    return dictionary
+
+
+{"goals": {"New Car": {"amount": 10000, "progress":[ 7000.0]},
+        "Vacation": {"amount": 5000, "progress": [2000]},
+        "Emergency Fund": {"amount": 2000, "progress": 1500}}, 
+"budget": {"Food": {"amount": 500, "remaining": 200}, 
+        "Entertainment": {"amount": 300, "remaining": 150}, 
+        "Bills": {"amount": 1000, "remaining": 800}}, 
+"expenses": [2000.0],
+"income":[]}
