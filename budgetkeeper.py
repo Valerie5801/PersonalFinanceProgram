@@ -162,7 +162,7 @@ def budget(dict):
                             continue
                         break
                     goal_amount = float(goal_amount)
-                    dict["goals"][goal_name] = {"amount": goal_amount, "progress": 0}
+                    dict["goals"][goal_name] = {"amount": goal_amount, "progress": [0]}
                     print(f"New goal {goal_name} created with total amount ${goal_amount}. this goal has no progress yet, but you can edit this goal to add progress or add to it using the add to goal option.")
                 elif goal_choice == '4':
                     continue
