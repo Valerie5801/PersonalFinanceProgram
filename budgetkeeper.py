@@ -72,7 +72,8 @@ While True:
 """
 test_dict = {"goals": {}, 
              "budget": {},
-             "expenses" : 0}
+             "expenses": [],
+             "expenses_history": []}
 def budget(dict):
     while True:
         print("Welcome to the budget keeper!")
@@ -107,9 +108,11 @@ def budget(dict):
                     print(f"How much would you like to add to {goal_to_edit}?")
                     amount_to_add = float(input("Enter the amount: "))
                     dict["goals"][goal_to_edit]["progress"] += amount_to_add
+                    dict["goals"][goal_to_edit]["progress_history"].append(amount_to_add)
                     new_percent_complete = (dict["goals"][goal_to_edit]["progress"] / dict["goals"][goal_to_edit]["amount"]) * 100
                     print(f"New progress for {goal_to_edit}: {new_percent_complete:.2f}% complete")
-                    dict["expenses"] = dict["expenses"] + amount_to_add
+                    dict["expenses"].append(amount_to_add)
+                    dict["expenses_history"].append(amount_to_add)
                 elif goal_choice == '2':
                     count = 1
                     for x in dict["goals"].keys():
@@ -151,8 +154,14 @@ def budget(dict):
                     print(f"Updated information for {goal_to_edit}:")
                     print(f"Total: ${dict['goals'][goal_to_edit]['amount']}")
                     print(f"Progress: ${dict['goals'][goal_to_edit]['progress']}")
-                    change = old_progress - dict['goals'][goal_to_edit]['progress']
-                    dict["expenses"] += change
+                    change = new_progress - old_progress
+                    if change > 0:
+                        dict["goals"][goal_to_edit]["progress_history"].append(change)
+                        dict["expenses"].append(change)
+                        dict["expenses_history"].append(change)
+                    elif change < 0:
+                        # perhaps remove from history, but complicated, skip for now
+                        pass
                 elif goal_choice == '3':
                     goal_name = input("Enter the name of the new goal: ")
                     while True:
@@ -162,7 +171,7 @@ def budget(dict):
                             continue
                         break
                     goal_amount = float(goal_amount)
-                    dict["goals"][goal_name] = {"amount": goal_amount, "progress": [0]}
+                    dict["goals"][goal_name] = {"amount": goal_amount, "progress": 0, "progress_history": []}
                     print(f"New goal {goal_name} created with total amount ${goal_amount}. this goal has no progress yet, but you can edit this goal to add progress or add to it using the add to goal option.")
                 elif goal_choice == '4':
                     continue
@@ -191,7 +200,8 @@ def budget(dict):
                 category_to_edit = list(dict["budget"].keys())[category_selection - 1]
                 dict["budget"][category_to_edit]["remaining"] += amount_to_add
                 print(f"New remaining amount for {category_to_edit}: ${dict['budget'][category_to_edit]['remaining']}")
-                dict["expenses"] += amount_to_add
+                # Assuming adding to category is not an expense, remove the expense addition
+                # dict["expenses"] += amount_to_add
             elif budget_choice == '2':
                 count = 1
                 for x in dict["budget"].keys():
@@ -234,8 +244,11 @@ def budget(dict):
                 print(f"Updated information for {category_to_edit}:")
                 print(f"Total: ${dict['budget'][category_to_edit]['amount']}")
                 print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
-                change = old_remainder - dict['budget'][category_to_edit]['remaining']
-                dict["expenses"] += change
+                spent = old_remainder - new_remaining
+                if spent > 0:
+                    dict["budget"][category_to_edit]["spent_history"].append(spent)
+                    dict["expenses"].append(spent)
+                    dict["expenses_history"].append(spent)
             elif budget_choice == '3':
                 category_name = input("Enter the name of the new category: ")
                 while True:
@@ -245,7 +258,7 @@ def budget(dict):
                         continue
                     break
                 category_amount = float(category_amount)
-                dict["budget"][category_name] = {"amount": category_amount, "remaining": category_amount}
+                dict["budget"][category_name] = {"amount": category_amount, "remaining": category_amount, "spent_history": []}
                 print(f"New category {category_name} created with total amount ${category_amount}. this category has no expenses yet, but you can edit this category to add expenses or add to it using the add to category option.")
             elif budget_choice == '4':
                 continue
@@ -260,13 +273,16 @@ def budget(dict):
 def get_from_csv(file):
     with open(file, "r") as r:
         reader = csv.DictReader(r)
-        data_dict = {"goals": {}, "budget": {}, "expenses": 0}
+        data_dict = {"goals": {}, "budget": {}, "expenses": [], "expenses_history": []}
         
         for row in reader:
             if row["type"].lower() == "goal":
-                data_dict["goals"][row["name"]] = {"amount": float(row["amount"]),"progress": float(row["progress"])}
+                progress = float(row["progress"]) if "progress" in row else 0
+                data_dict["goals"][row["name"]] = {"amount": float(row["amount"]),"progress": progress, "progress_history": []}
             elif row["type"].lower() == "budget":
-                data_dict["budget"][row["name"]] = {"amount": float(row["amount"]),"remaining": float(row["remaining"])}
+                remaining = float(row["remaining"]) if "remaining" in row else float(row["amount"])
+                data_dict["budget"][row["name"]] = {"amount": float(row["amount"]),"remaining": remaining, "spent_history": []}
             elif row["type"].lower() == "expenses":
-                data_dict["expenses"] = float(row["amount"])
+                # For old data, expenses might be total, but now list, so perhaps append the total or ignore
+                pass
         return data_dict
