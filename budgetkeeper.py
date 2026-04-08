@@ -256,7 +256,7 @@ def budget(dict):
             break
         else:
             print("Invalid option, please try again.")
-        save_dict(dict)
+    return dict
 def get_from_csv(file):
     with open(file, "r") as r:
         reader = csv.DictReader(r)
