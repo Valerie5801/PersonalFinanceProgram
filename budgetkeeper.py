@@ -1,4 +1,5 @@
 import json
+import csv
 def validate_input(text, kind='int'):
     test_to_check = str(text).strip().capitalize()
     if kind == 'int':
@@ -235,5 +236,19 @@ def budget(dict):
 def save_dict(dict):
     with open("saved_dicts.json", "w") as w:
         json.dump(dict["expenses"], w)
+def get_from_csv(file):
+    with open(file, "r") as r:
+        reader = csv.DictReader(r)
+        data_dict = {"goals": {}, "budget": {}, "expenses": 0}
+        
+        for row in reader:
+            if row["type"].lower() == "goal":
+                data_dict["goals"][row["name"]] = {"amount": float(row["amount"]),"progress": float(row["progress"])}
+            elif row["type"].lower() == "budget":
+                data_dict["budget"][row["name"]] = {"amount": float(row["amount"]),"remaining": float(row["remaining"])}
+            elif row["type"].lower() == "expenses":
+                data_dict["expenses"] = float(row["amount"])
+        return data_dict
+
 
 budget(test_dict)
