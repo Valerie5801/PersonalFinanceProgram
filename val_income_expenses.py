@@ -22,7 +22,7 @@ class Incomes:
 
     def show_income(self):
         for income in self.hist_income:
-            print(income)
+            print(f"{income}\n")
 
 
 class Income:
@@ -87,29 +87,43 @@ class Expense:
 
 
 def set_income():
-    income_interval = datetime.datetime()
-    
+    income_hist = Incomes()
     while True:
-        income_amount = input("What's your income amount (in the time interval you typed in)?: ")
-        check_income = validate_input(income_amount, "float")
-        if check_income:
-            income_amount = float(income_amount)
+        total_income_hist = input("How many records do you want to keep in your income history?(as a whole number): ")
+        check_num = validate_input(total_income_hist, "int")
+        if check_num:
+            total_income_hist = int(total_income_hist)
             break
         else:
-            print("That isn't a number.")
+            print("Please type it as a whole number.")
 
-    user_income = Income(income_interval, income_amount)
-    print(user_income)
-    return user_income
+    for i in total_income_hist:
+        income_interval = datetime.datetime()
+        
+        while True:
+            income_amount = input("What's your income amount?: ")
+            check_income = validate_input(income_amount, "float")
+            if check_income:
+                income_amount = float(income_amount)
+                break
+            else:
+                print("That isn't a number.")
+
+            add_user_income = Income(income_interval, income_amount)
+            income_hist.add_income(add_user_income)
+
+    print("Here is your income history.")
+    print(income_hist)
+    return income_hist
 
 
 def set_expenses():
     all_expenses = Expenses()
     while True:
-        total_expense_groups = input("How may expense groups do you have?(type as a whole number): ")
+        total_expense_groups = input("How many expense groups do you have?(type as a whole number): ")
         check_num = validate_input(total_expense_groups, "int")
         if check_num:
-            check_num = int(check_num)
+            total_expense_groups = int(total_expense_groups)
             break
         else:
             print("Please type it as a whole number.")
