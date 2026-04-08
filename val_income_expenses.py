@@ -1,5 +1,6 @@
 #VY 2nd Income and Expenses
 from budgetkeeper import validate_input #temporary, get from helper functions once it's there
+from val_currency_conversion import currency_conversion
 
 class Income:
     def __init__(self, given_time, given_amount):
@@ -119,3 +120,12 @@ def set_expenses():
     
     print("Here's all your expenses:")
     all_expenses.show_expenses()
+    return all_expenses
+
+
+print("Testing currency conversion...")
+currency_conversion()
+print("\nTesting income/expenses...")
+set_income()
+print("\n")
+set_expenses()
