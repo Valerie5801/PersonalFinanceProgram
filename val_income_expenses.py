@@ -1,7 +1,7 @@
 #VY 2nd Income and Expenses
 from budgetkeeper import validate_input
 from val_currency_conversion import currency_conversion
-import time as t
+from datetime import datetime
 
 class Incomes:
     def __init__(self, hist_income=None):
@@ -87,7 +87,7 @@ class Expense:
 
 
 def set_income():
-    income_interval = t.datetime()
+    income_interval = datetime.datetime()
     
     while True:
         income_amount = input("What's your income amount (in the time interval you typed in)?: ")
@@ -117,12 +117,7 @@ def set_expenses():
     for i in range(int(total_expense_groups)-1):
         expense_name = input(f"What is the name of expense group {i+1}?: ")
 
-        while True:
-            expense_interval = input("What time interval would you like to track this expense group?(day/month/year): ").lower().strip()
-            if expense_interval != "day" and expense_interval != "month" != "year":
-                print('Please type in either "daily", "month", or "year"')
-            else:
-                break
+        expense_interval = datetime.datetime()
         
         while True:
             expense_amount = input("What's your expense value (in the time interval you typed in)?: ")
