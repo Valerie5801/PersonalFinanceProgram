@@ -252,4 +252,3 @@ def get_from_csv(file):
         return data_dict
 
 
-budget(test_dict)
