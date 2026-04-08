@@ -1,6 +1,29 @@
 #VY 2nd Income and Expenses
-from budgetkeeper import validate_input #temporary, get from helper functions once it's there
+from budgetkeeper import validate_input
 from val_currency_conversion import currency_conversion
+import time as t
+
+class Incomes:
+    def __init__(self, hist_income=None):
+        if hist_income:
+            self.hist_income = hist_income
+        else:
+            self.hist_income = []
+
+    def add_income(self, new_expense):
+        self.hist_income.append(new_expense)
+
+    def remove_income(self, selected_income):
+        if selected_income in self.hist_income:
+            self.all_expenses.pop(selected_income)
+            print(f"Category {selected_income.name} has been removed from your income history.")
+        else:
+            print(f"That doesn't exist.")
+
+    def show_income(self):
+        for income in self.hist_income:
+            print(income)
+
 
 class Income:
     def __init__(self, given_time, given_amount):
@@ -16,7 +39,7 @@ class Income:
         self.income_info["amount"] = new_amount
     
     def __str__(self):
-        return f"You earn ${self.income_info["amount"]} per {self.income_info["time"]}."
+        return f"You got ${self.income_info["amount"]} at {self.income_info["time"]}."
 
 
 class Expenses:
@@ -59,17 +82,12 @@ class Expense:
         self.expense_info["source"] = new_source
     
     def __str__(self):
-        return f"Category {self.expense_info["source"]} is ${self.expense_info["amount"]} per {self.expense_info["time"]}.\n"
+        return f"Category {self.expense_info["source"]} is ${self.expense_info["amount"]} at {self.expense_info["time"]}.\n"
 
 
 
 def set_income():
-    while True:
-        income_interval = input("What time interval do you recieve your income/like to track it?(day/month/year): ").lower().strip()
-        if income_interval != "day" and income_interval != "month" != "year":
-            print('Please type in either "daily", "month", or "year"')
-        else:
-            break
+    income_interval = t.datetime()
     
     while True:
         income_amount = input("What's your income amount (in the time interval you typed in)?: ")
