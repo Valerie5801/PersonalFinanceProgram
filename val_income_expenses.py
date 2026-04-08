@@ -1,5 +1,6 @@
 #VY 2nd Income and Expenses
 from budgetkeeper import validate_input #temporary, get from helper functions once it's there
+from val_currency_conversion import currency_conversion
 
 class Income:
     def __init__(self, given_time, given_amount):
@@ -95,8 +96,8 @@ def set_expenses():
         else:
             print("Please type it as a whole number.")
 
-    for i in range(total_expense_groups):
-        expense_name = input(f"What is the name of expense group {i}?: ")
+    for i in range(int(total_expense_groups)-1):
+        expense_name = input(f"What is the name of expense group {i+1}?: ")
 
         while True:
             expense_interval = input("What time interval would you like to track this expense group?(day/month/year): ").lower().strip()
@@ -119,3 +120,4 @@ def set_expenses():
     
     print("Here's all your expenses:")
     all_expenses.show_expenses()
+    return all_expenses
