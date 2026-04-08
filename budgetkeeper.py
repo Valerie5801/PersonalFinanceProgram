@@ -70,8 +70,8 @@ While True:
 			
 	
 """
-test_dict = {"goals": {"New Car": {"amount": 10000, "progress": 5000}, "Vacation": {"amount": 5000, "progress": 2000}, "Emergency Fund": {"amount": 2000, "progress": 1500}}, 
-             "budget": {"Food": {"amount": 500, "remaining": 200}, "Entertainment": {"amount": 300, "remaining": 150}, "Bills": {"amount": 1000, "remaining": 800}},
+test_dict = {"goals": {}, 
+             "budget": {},
              "expenses" : 0}
 def budget(dict):
     while True:
@@ -117,7 +117,7 @@ def budget(dict):
                     print ("Select a goal to edit:")
                     while True:
                         goal_selection = int(input("Enter the number of the goal: "))
-                        if goal_selection not in range(1, count-1):
+                        if goal_selection not in range(1, count):
                             print ("please enter a valid selection value")
                             continue
                         break
@@ -130,17 +130,17 @@ def budget(dict):
                         while True:
                             new_amount = input("Enter new goal total (or press enter to keep current): ") or dict['goals'][goal_to_edit]['amount']
                             if not validate_input(new_amount, 'int'):
-                                print ("please enter an intiger value")
+                                print ("please enter an integer value")
                                 continue
                             break
                         new_amount = float(new_amount)
                         while True:
                             new_progress = input("Enter new progress (or press enter to keep current): ") or dict['goals'][goal_to_edit]['progress']
                             if not validate_input(new_progress, 'int'):
-                                print ("please enter an intiger value")
+                                print ("please enter an integer value")
                                 continue
                             break
-                        new_progress = float(new_amount)
+                        new_progress = float(new_progress)
                         if new_progress > new_amount:
                             print ("Your new progress cannot be greater than the total. \n please reenter the information.")
                             continue
@@ -202,14 +202,14 @@ def budget(dict):
                         while True:
                             new_amount = input("Enter new category total (or press enter to keep current): ") or dict['budget'][category_to_edit]['amount']
                             if not validate_input(new_amount, 'int'):
-                                print ("please enter an intiger value")
+                                print ("please enter an integer value")
                                 continue
                             break
                         new_amount = float(new_amount)
                         while True:
                             new_remaining = input("Enter new remaining amount (or press enter to keep current): ") or dict['budget'][category_to_edit]['remaining']
                             if not validate_input(new_remaining, 'int'):
-                                print ("please enter an intiger value")
+                                print ("please enter an integer value")
                                 continue
                             break
                         new_remaining = float(new_remaining)
@@ -223,6 +223,7 @@ def budget(dict):
                     print(f"Total: ${dict['budget'][category_to_edit]['amount']}")
                     print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
                     change = old_remainder - dict['budget'][category_to_edit]['remaining']
+                    dict["expenses"] += change
                 elif budget_choice == '3':
                     continue
                 else:
