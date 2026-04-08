@@ -92,7 +92,8 @@ def budget(dict):
                 print("Options:")
                 print("1. Add to goal")
                 print("2. Edit goal")
-                print("3. Quit")
+                print("3. Create Goal")
+                print("4. Quit")
                 goal_choice = input("Please select an option: ")
                 if goal_choice == '1':
                     pass
@@ -153,90 +154,109 @@ def budget(dict):
                     change = old_progress - dict['goals'][goal_to_edit]['progress']
                     dict["expenses"] += change
                 elif goal_choice == '3':
+                    goal_name = input("Enter the name of the new goal: ")
+                    while True:
+                        goal_amount = input("Enter the total amount for the new goal: ")
+                        if not validate_input(goal_amount, 'int'):
+                            print ("please enter an integer value")
+                            continue
+                        break
+                    goal_amount = float(goal_amount)
+                    dict["goals"][goal_name] = {"amount": goal_amount, "progress": 0}
+                    print(f"New goal {goal_name} created with total amount ${goal_amount}. this goal has no progress yet, but you can edit this goal to add progress or add to it using the add to goal option.")
+                elif goal_choice == '4':
                     continue
                 else:
                     print("Invalid option, please try again.")
         elif choice == '2':
             if dict["budget"] == {}:
                 print("Welcome to the budget categories section! Here you can create budget categories and track your spending.")
-            else:
-                print("Here are your current budget categories and their remaining amounts:")
-                for category, info in dict["budget"].items():
-                    print(f"{category}: ${info['remaining']} remaining")
-                print("Options:")
-                print("1. Add to category")
-                print("2. Edit category")
-                print("3. Quit")
-                budget_choice = input("Please select an option: ")
-                if budget_choice == '1':
-                    count = 1
-                    for x in dict["budget"].keys():
-                        print(f"{count}. {x}")
-                        count += 1
-                    print ("Select a category to add to:")
+            print("Here are your current budget categories and their remaining amounts:")
+            for category, info in dict["budget"].items():
+                print(f"{category}: ${info['remaining']} remaining")
+            print("Options:")
+            print("1. Add to category")
+            print("2. Edit category")
+            print("3. create category")
+            print("4. Quit")
+            budget_choice = input("Please select an option: ")
+            if budget_choice == '1':
+                count = 1
+                for x in dict["budget"].keys():
+                    print(f"{count}. {x}")
+                    count += 1
+                print ("Select a category to add to:")
+                category_selection = int(input("Enter the number of the category: "))
+                amount_to_add = float(input("Enter the amount to add: "))
+                category_to_edit = list(dict["budget"].keys())[category_selection - 1]
+                dict["budget"][category_to_edit]["remaining"] += amount_to_add
+                print(f"New remaining amount for {category_to_edit}: ${dict['budget'][category_to_edit]['remaining']}")
+                dict["expenses"] += amount_to_add
+            elif budget_choice == '2':
+                count = 1
+                for x in dict["budget"].keys():
+                    print(f"{count}. {x}")
+                    count += 1
+                print ("Select a category to edit:")
+                while True:
                     category_selection = int(input("Enter the number of the category: "))
-                    amount_to_add = float(input("Enter the amount to add: "))
-                    category_to_edit = list(dict["budget"].keys())[category_selection - 1]
-                    dict["budget"][category_to_edit]["remaining"] += amount_to_add
-                    print(f"New remaining amount for {category_to_edit}: ${dict['budget'][category_to_edit]['remaining']}")
-                    dict["expenses"] += amount_to_add
-                elif budget_choice == '2':
-                    count = 1
-                    for x in dict["budget"].keys():
-                        print(f"{count}. {x}")
-                        count += 1
-                    print ("Select a category to edit:")
-                    while True:
-                        category_selection = int(input("Enter the number of the category: "))
-                        if category_selection not in range(1, count-1):
-                            print ("please enter a valid selection value")
-                            continue
-                        break
-                    category_to_edit = list(dict["budget"].keys())[category_selection - 1]
-                    print(f"Current information for {category_to_edit}:")
-                    print(f"Amount: ${dict['budget'][category_to_edit]['amount']}")
-                    old_remainder = dict['budget'][category_to_edit]['remaining']
-                    print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
+                    if category_selection not in range(1, count-1):
+                        print ("please enter a valid selection value")
+                        continue
+                    break
+                category_to_edit = list(dict["budget"].keys())[category_selection - 1]
+                print(f"Current information for {category_to_edit}:")
+                print(f"Amount: ${dict['budget'][category_to_edit]['amount']}")
+                old_remainder = dict['budget'][category_to_edit]['remaining']
+                print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
 
+                while True:
                     while True:
-                        while True:
-                            new_amount = input("Enter new category total (or press enter to keep current): ") or dict['budget'][category_to_edit]['amount']
-                            if not validate_input(new_amount, 'int'):
-                                print ("please enter an integer value")
-                                continue
-                            break
-                        new_amount = float(new_amount)
-                        while True:
-                            new_remaining = input("Enter new remaining amount (or press enter to keep current): ") or dict['budget'][category_to_edit]['remaining']
-                            if not validate_input(new_remaining, 'int'):
-                                print ("please enter an integer value")
-                                continue
-                            break
-                        new_remaining = float(new_remaining)
-                        if new_remaining > new_amount:
-                            print ("Your new remaining amount cannot be greater than the total. \n please reenter the information.")
+                        new_amount = input("Enter new category total (or press enter to keep current): ") or dict['budget'][category_to_edit]['amount']
+                        if not validate_input(new_amount, 'int'):
+                            print ("please enter an integer value")
                             continue
                         break
-                    dict["budget"][category_to_edit]["amount"] = new_amount
-                    dict["budget"][category_to_edit]["remaining"] = new_remaining
-                    print(f"Updated information for {category_to_edit}:")
-                    print(f"Total: ${dict['budget'][category_to_edit]['amount']}")
-                    print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
-                    change = old_remainder - dict['budget'][category_to_edit]['remaining']
-                    dict["expenses"] += change
-                elif budget_choice == '3':
-                    continue
-                else:
-                    print("Invalid option, please try again.")
+                    new_amount = float(new_amount)
+                    while True:
+                        new_remaining = input("Enter new remaining amount (or press enter to keep current): ") or dict['budget'][category_to_edit]['remaining']
+                        if not validate_input(new_remaining, 'int'):
+                            print ("please enter an integer value")
+                            continue
+                        break
+                    new_remaining = float(new_remaining)
+                    if new_remaining > new_amount:
+                        print ("Your new remaining amount cannot be greater than the total. \n please reenter the information.")
+                        continue
+                    break
+                dict["budget"][category_to_edit]["amount"] = new_amount
+                dict["budget"][category_to_edit]["remaining"] = new_remaining
+                print(f"Updated information for {category_to_edit}:")
+                print(f"Total: ${dict['budget'][category_to_edit]['amount']}")
+                print(f"Remaining: ${dict['budget'][category_to_edit]['remaining']}")
+                change = old_remainder - dict['budget'][category_to_edit]['remaining']
+                dict["expenses"] += change
+            elif budget_choice == '3':
+                category_name = input("Enter the name of the new category: ")
+                while True:
+                    category_amount = input("Enter the total amount for the new category: ")
+                    if not validate_input(category_amount, 'int'):
+                        print ("please enter an integer value")
+                        continue
+                    break
+                category_amount = float(category_amount)
+                dict["budget"][category_name] = {"amount": category_amount, "remaining": category_amount}
+                print(f"New category {category_name} created with total amount ${category_amount}. this category has no expenses yet, but you can edit this category to add expenses or add to it using the add to category option.")
+            elif budget_choice == '4':
+                continue
+            else:
+                print("Invalid option, please try again.")
         elif choice == '3':
             print("Goodbye!")
             break
         else:
             print("Invalid option, please try again.")
         save_dict(dict)
-def save_dict(dict):
-    with open("saved_dicts.json", "w") as w:
-        json.dump(dict["expenses"], w)
 def get_from_csv(file):
     with open(file, "r") as r:
         reader = csv.DictReader(r)
