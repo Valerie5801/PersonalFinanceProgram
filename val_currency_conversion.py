@@ -1,24 +1,5 @@
 #VY 2nd Currency Conversion
-
-#only put here for early testing, later take from helper functions
-def validate_input(text, kind='int'):
-    test_to_check = str(text).strip().capitalize()
-    if kind == 'int':
-        try:
-            int(test_to_check)
-            return True
-        except ValueError:
-            return False
-    elif kind == 'float':
-        try:
-            float(test_to_check)
-            return True
-        except ValueError:
-            return False
-    elif kind == 'alpha':
-        return test_to_check.isalpha()
-    else:
-        return False
+from budgetkeeper import validate_input
 
 
 def currency_conversion():
