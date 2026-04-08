@@ -270,5 +270,3 @@ def get_from_csv(file):
             elif row["type"].lower() == "expenses":
                 data_dict["expenses"] = float(row["amount"])
         return data_dict
-
-
