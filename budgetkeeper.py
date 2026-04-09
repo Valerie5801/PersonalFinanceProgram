@@ -1,6 +1,9 @@
 import json
 import csv
 import tkinter as tk
+tcl = tk.Tcl()
+print(tcl.call("info", "patchlevel"))
+root = tk.Tk()
 def validate_input(text, kind='int'):
     test_to_check = str(text).strip().capitalize()
     if kind == 'int':
@@ -67,7 +70,6 @@ While True:
 		If quit:
 			Return from function	
 """
-root = tk.Tk()
 
 root.title("Budget Keeper")
 root.minsize(250, 250)
