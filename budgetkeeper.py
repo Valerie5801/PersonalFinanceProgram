@@ -64,11 +64,7 @@ While True:
 				If quit:
 					Continue to start of loop
 		If quit:
-			Return from function
-		
-		
-			
-	
+			Return from function	
 """
 test_dict = {"goals": {}, 
              "budget": {},
@@ -159,7 +155,6 @@ def budget(dict):
                     dict["expenses"].append(change)
                     dict["expenses_history"].append(change)
                 elif change < 0:
-                    # perhaps remove from history, but complicated, skip for now
                     pass
             elif goal_choice == '3':
                 goal_name = input("Enter the name of the new goal: ")
@@ -199,8 +194,7 @@ def budget(dict):
                 category_to_edit = list(dict["budget"].keys())[category_selection - 1]
                 dict["budget"][category_to_edit]["remaining"] += amount_to_add
                 print(f"New remaining amount for {category_to_edit}: ${dict['budget'][category_to_edit]['remaining']}")
-                # Assuming adding to category is not an expense, remove the expense addition
-                # dict["expenses"] += amount_to_add
+                dict["expenses"] += amount_to_add
             elif budget_choice == '2':
                 count = 1
                 for x in dict["budget"].keys():
@@ -292,7 +286,6 @@ def get_from_csv(file):
                 remaining = float(row["remaining"]) if "remaining" in row else float(row["amount"])
                 data_dict["budget"][row["name"]] = {"amount": float(row["amount"]),"remaining": remaining, "spent_history": []}
             elif row["type"].lower() == "expenses":
-                # For old data, expenses might be total, but now list, so perhaps append the total or ignore
                 pass
         return data_dict
 budget(test_dict)
