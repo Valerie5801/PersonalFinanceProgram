@@ -1,7 +1,6 @@
 import json
 import csv
-import tkinter
-root = tkinter.Tk()
+import tkinter as tk
 def validate_input(text, kind='int'):
     test_to_check = str(text).strip().capitalize()
     if kind == 'int':
@@ -68,6 +67,13 @@ While True:
 		If quit:
 			Return from function	
 """
+root = tk.Tk()
+
+root.title("Budget Keeper")
+root.minsize(250, 250)
+root.maxsize(1000, 1000)
+root.geometry("300x300+100+100")
+root.configure(background="pale goldenrod")
 test_dict = {"goals": {}, 
              "budget": {},
              "expenses": [],
