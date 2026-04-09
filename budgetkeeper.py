@@ -1,5 +1,7 @@
 import json
 import csv
+import tkinter
+root = tkinter.Tk()
 def validate_input(text, kind='int'):
     test_to_check = str(text).strip().capitalize()
     if kind == 'int':
