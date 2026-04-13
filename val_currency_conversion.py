@@ -18,7 +18,7 @@ def currency_conversion():
     root = tk.Tk()
     """Creates a popup window with a close button"""
     popup = tk.Toplevel(root)
-    popup.title("Currency Conversio")
+    popup.title("Currency Conversion")
     popup.geometry("600x500")
     popup.configure(background="pale goldenrod")
     content_frame = tk.Frame(popup, bg="pale goldenrod")
@@ -76,3 +76,5 @@ def currency_conversion():
     end_money = conversions[chosen_conversion] * start_money
 
     print(f"{start_money} {print_first} is {end_money} {print_second}.")
+
+currency_conversion()
