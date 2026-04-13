@@ -1,6 +1,5 @@
 #VY 2nd Income and Expenses
 from budgetkeeper import validate_input
-from val_currency_conversion import currency_conversion
 from datetime import datetime
 
 class Incomes:
