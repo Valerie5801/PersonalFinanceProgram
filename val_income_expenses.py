@@ -173,20 +173,20 @@ class IncomeExpenseGUI:
                 total_income_hist = int(total_income_hist)
                 break
             else:
-                print("Please type it as a whole number. Don't type in 0.")
+                messagebox.showerror("Invalid Input", "Please type it as a whole number. Don't type in 0.")
 
         for i in range(total_income_hist):
             income_interval = date.today()
             
             while True:
                 print(f"Input at {income_interval}...")
-                income_amount = simpledialog.askfloat("What's the income amount?: ")
+                income_amount = simpledialog.askfloat("Get Value", "What's the income amount for this entry?: ")
                 check_income = validate_input(income_amount, "float")
                 if check_income:
                     income_amount = float(income_amount)
                     break
                 else:
-                    print("That isn't a number.")
+                    messagebox.showerror("Invalid Input", "Please type it a number.")
 
             new_item = Income(income_interval, income_amount)
             self.data['income'].add_income(new_item)
@@ -197,6 +197,8 @@ class IncomeExpenseGUI:
         if not self.data["income"]:
             messagebox.showwarning("Nothing in history", "Your history is empty. Start by adding an item to it!")
             return
+        
+        selection = self.show_selection_dialog("", "Select the entry you want to remove:", self.data['income'])
         
         
 
@@ -274,38 +276,6 @@ class IncomeExpenseGUI:
         dialog.wait_window()
         return selected
 
-
-
-def set_income():
-    income_hist = Incomes()
-    while True:
-        total_income_hist = input("How many records do you want to keep in your income history?(as a whole number): ")
-        check_num = validate_input(total_income_hist, "int")
-        if check_num and int(total_income_hist) > 0:
-            total_income_hist = int(total_income_hist)
-            break
-        else:
-            print("Please type it as a whole number. Don't type in 0.")
-
-    for i in range(total_income_hist):
-        income_interval = date.today()
-        
-        while True:
-            print(f"Input at {income_interval}...")
-            income_amount = input("What's the income amount?: ")
-            check_income = validate_input(income_amount, "float")
-            if check_income:
-                income_amount = float(income_amount)
-                break
-            else:
-                print("That isn't a number.")
-
-        add_user_income = Income(income_interval, income_amount)
-        income_hist.add_income(add_user_income)
-
-    print("\nHere is your income history:")
-    income_hist.show_income()
-    return income_hist
 
 
 def set_expenses():
