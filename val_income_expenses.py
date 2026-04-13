@@ -1,6 +1,6 @@
 #VY 2nd Income and Expenses
 from budgetkeeper import validate_input
-from datetime import datetime
+from datetime import date
 
 class Incomes:
     def __init__(self, hist_income=None):
@@ -97,7 +97,7 @@ def set_income():
             print("Please type it as a whole number. Don't type in 0.")
 
     for i in range(total_income_hist):
-        income_interval = datetime.now()
+        income_interval = date.today()
         
         while True:
             print(f"Input at {income_interval}...")
@@ -131,7 +131,7 @@ def set_expenses():
     for i in range(int(total_expense_groups)):
         expense_name = input(f"What is the name of expense group {i+1}?: ")
 
-        expense_interval = datetime.now()
+        expense_interval = date.today()
         
         while True:
             expense_amount = input("What's your expense value for this category?: ")
