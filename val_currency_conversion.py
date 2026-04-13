@@ -1,6 +1,6 @@
 #VY 2nd Currency Conversion
 from budgetkeeper import validate_input
-
+import tkinter as tk
 
 def currency_conversion():
     exist_currencies = ["dollar", "euro", "yen"]
@@ -14,6 +14,18 @@ def currency_conversion():
         "euro to yen": 185.03,
         "yen to euro": 0.0054
     }
+
+    root = tk.Tk()
+    """Creates a popup window with a close button"""
+    popup = tk.Toplevel(root)
+    popup.title("Currency Conversio")
+    popup.geometry("600x500")
+    popup.configure(background="pale goldenrod")
+    content_frame = tk.Frame(popup, bg="pale goldenrod")
+    content_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+    # Close button at the bottom
+    close_button = tk.Button(popup, text="Close", command=popup.destroy, bg="lightcoral", font=("Arial", 12))
+    close_button.pack(pady=10)
 
     def check_currency():
         while True:
