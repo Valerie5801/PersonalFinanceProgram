@@ -356,7 +356,7 @@ test_dict = {"goals": {},
     
 root = tk.Tk()
 run = budgetkeeperGUI(root, test_dict)
-root.mainloop()
+#root.mainloop()
 
 """Def budget():
 While True:
