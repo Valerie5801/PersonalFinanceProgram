@@ -17,7 +17,7 @@ def currency_conversion(root):
     }
 
     """create a popup window with a close button. Taken from Zane's class"""
-    popup = root
+    popup = tk.Toplevel(root)
     popup.title("Currency Conversion")
     popup.geometry("600x500")
     popup.configure(background="pale goldenrod")
