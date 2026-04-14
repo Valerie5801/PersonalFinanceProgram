@@ -44,4 +44,4 @@ def menu():
                     case _:
                         continue
 
-menu()
+#menu()
