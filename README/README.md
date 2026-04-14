@@ -1,7 +1,10 @@
 # Personal Finance  
- 
+
+![The budget menu of the program.](budgetkeeper.png)
+***
+
 This program is an expansive personal finance manager, with many tools and a clean GUI.  
- 
+
 ## How to use the project 
 *** 
 1. install numpy and matplotlib, 
@@ -18,7 +21,13 @@ This program is an expansive personal finance manager, with many tools and a cle
 
 ## Contributors
 ***
-- Valerie Yang
-- Zane Carter
-- Seth White
-- Paxton Hall
+- Valerie5801
+- Zuzanune
+- Pakistan5681
+- CheesyDevil
+
+## License Information
+- Utah County Academy of Sciences
+
+## Contributions
+- You can make all of the windows more coherent and organize the code.
