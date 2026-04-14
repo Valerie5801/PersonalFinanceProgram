@@ -35,7 +35,7 @@ def get_from_csv(file):
                 pass
         return data_dict
 def create_popup_window(title, content_func):
-        popup = tk.Toplevel(root)
+        popup = tk.Toplevel()
         popup.title(title)
         popup.geometry("600x500")
         popup.configure(background="pale goldenrod")
@@ -385,14 +385,6 @@ class guipage:
         button.pack(pady=10)
         dialog.wait_window()
         return selected
-test_dict = {"goals": {}, 
-            "budget": {},
-            "expenses": [],
-            "expenses_history": []}
-    
-root = tk.Tk()
-run = guipage(root, test_dict)
-root.mainloop()
 
 """Def budget():
 While True:
