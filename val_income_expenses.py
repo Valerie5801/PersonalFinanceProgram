@@ -14,16 +14,8 @@ class Incomes:
     def add_income(self, new_income):
         self.hist_income.append(new_income)
 
-    def remove_income(self, selected_income):
-        if selected_income in self.hist_income:
-            self.hist_income.remove(selected_income)
-            messagebox.showerror(f"Income set at {selected_income['time']} has been removed from your income history.")
-        else:
-            print(f"That doesn't exist.")
-
-    def show_income(self):
-        for income in self.hist_income:
-            print(f"{income}")
+    def get_all_income(self):
+        return self.hist_income
 
 
 class Income:
@@ -53,16 +45,8 @@ class Expenses:
     def add_expense(self, new_expense):
         self.all_expenses.append(new_expense)
 
-    def remove_expense(self, selected_expense):
-        if selected_expense in self.all_expenses:
-            self.all_expenses.remove(selected_expense)
-            print(f"Category {selected_expense['source']} has been removed from expenses.")
-        else:
-            print(f"That expense doesn't exist.")
-
-    def show_expenses(self):
-        for expense in self.all_expenses:
-            print(expense)
+    def get_all_expenses(self):
+        return self.all_expenses
 
 
 class Expense:
@@ -100,6 +84,7 @@ class IncomeExpenseGUI:
         self.root.geometry("700x600+100+100")
         self.root.configure(background="pale goldenrod")
         self.setup_menu()
+
     def create_popup_window(self, title, content_func):
         """Creates a popup window with a close button"""
         popup = tk.Toplevel(self.root)
@@ -113,6 +98,7 @@ class IncomeExpenseGUI:
         close_button = tk.Button(popup, text="Close", command=popup.destroy, bg="lightcoral", font=("Arial", 12))
         close_button.pack(pady=10)
         return popup
+    
     def setup_menu(self):
         self.clear_window()
         title = tk.Label(self.root, text="Income/Expense Tracker", font=("Arial", 20, "bold"), bg="pale goldenrod")
@@ -149,7 +135,8 @@ class IncomeExpenseGUI:
         if self.data["income"]:
             goals_text = scrolledtext.ScrolledText(frame, height=10, width=60, bg="white")
             goals_text.pack(pady=10)
-            self.data['income'].show_income()
+            for income in self.data["income"].get_all_income():
+                goals_text.insert(tk.END, str(income) + "\n")
             goals_text.config(state=tk.DISABLED)
         else:
             no_goals = tk.Label(frame, text="There is nothing in your income history yet.", bg="pale goldenrod", font=("Arial", 10))
@@ -165,32 +152,21 @@ class IncomeExpenseGUI:
         create_button.pack(side=tk.LEFT, padx=5)
 
     def add_to_income(self):
-        new_items = Incomes()
-        while True:
-            total_income_hist = simpledialog.askinteger("Get amount of groups","How many records do you want to add to your income history?(as a whole number): ")
-            check_num = validate_input(total_income_hist, "int")
-            if check_num and int(total_income_hist) > 0:
-                total_income_hist = int(total_income_hist)
-                break
-            else:
-                messagebox.showerror("Invalid Input", "Please type it as a whole number. Don't type in 0.")
+        income_amount = simpledialog.askfloat("Get Value", "What's the income amount for this entry?: ")
+        if income_amount is None:
+            return
+        
+        income_amount = float(income_amount)
 
-        for i in range(total_income_hist):
-            income_interval = date.today()
-            
-            while True:
-                print(f"Input at {income_interval}...")
-                income_amount = simpledialog.askfloat("Get Value", "What's the income amount for this entry?: ")
-                check_income = validate_input(income_amount, "float")
-                if check_income:
-                    income_amount = float(income_amount)
-                    break
-                else:
-                    messagebox.showerror("Invalid Input", "Please type it a number.")
-
-            new_item = Income(income_interval, income_amount)
-            self.data['income'].add_income(new_item)
-            new_items.add_income(new_item)
+        check_income = validate_input(income_amount, "float")
+        if not check_income:
+            messagebox.showerror("Invalid Input", "Please type a number.")
+            return
+        
+        income_date = date.today()
+        new_income = Income(income_date, income_amount)
+        self.data["income"].add_income(new_income)
+        messagebox.showinfo("Item Added", "Successfully added new item to your Income history.")
         
 
     def remove_from_income(self):
@@ -278,7 +254,7 @@ class IncomeExpenseGUI:
 
 
 
-def set_expenses():
+"""def set_expenses():
     all_expenses = Expenses()
     while True:
         total_expense_groups = input("How many expense groups do you have?(type as a whole number): ")
@@ -308,4 +284,4 @@ def set_expenses():
     
     print("\nHere's all your expenses:")
     all_expenses.show_expenses()
-    return all_expenses
+    return all_expenses"""
