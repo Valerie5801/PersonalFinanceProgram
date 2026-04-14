@@ -17,7 +17,7 @@ class Incomes:
     def remove_income(self, selected_income):
         if selected_income in self.hist_income:
             self.hist_income.remove(selected_income)
-            print(f"Income set at {selected_income['time']} has been removed from your income history.")
+            messagebox.showerror(f"Income set at {selected_income['time']} has been removed from your income history.")
         else:
             print(f"That doesn't exist.")
 
