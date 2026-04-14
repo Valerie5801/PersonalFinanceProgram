@@ -42,6 +42,25 @@ class budgetkeeperGUI:
         self.root.geometry("700x600+100+100")
         self.root.configure(background="pale goldenrod")
         self.setup_main_menu()
+
+    def saveData(self):
+        with open("saved_dicts.json", "w+") as file:
+            try:
+                rawDict = json.load(file)
+            except:
+                rawDict = {}
+
+            new_dict = {
+                "goals": self.data["goals"],
+                "budget": self.data["budget"],
+                "expenses": self.data["expenses"],
+                "income": self.data["income"]
+            }
+
+            rawDict[self.data["username"]] = new_dict
+            file.seek(0)
+            json.dump(rawDict, file, indent=4)
+
     def create_popup_window(self, title, content_func):
         """Creates a popup window with a close button"""
         popup = tk.Toplevel(self.root)
@@ -74,7 +93,7 @@ class budgetkeeperGUI:
         budget_button.pack(pady=10)
         income_button = tk.Button(button_frame, text="Edit Income", command=self.open_income_window, width=20, font=("Arial", 12))
         income_button.pack(pady=10)
-        quit_button = tk.Button(button_frame, text="Quit", command=self.root.quit, width=20, font=("Arial", 12), bg="lightcoral")
+        quit_button = tk.Button(button_frame, text="Quit", command=self.root.destroy, width=20, font=("Arial", 12), bg="lightcoral")
         quit_button.pack(pady=10)
     def clear_window(self):
         """Clear all widgets from the main window"""
@@ -95,10 +114,10 @@ class budgetkeeperGUI:
             goals_text.pack(pady=10)
             for goal, info in self.data["goals"].items():
                 if info["amount"] > 0:
-                    percent_complete = (info["progress"] / info["amount"]) * 100
+                    percent_complete = (info["progress"][-1] / info["amount"]) * 100
                 else:
                     percent_complete = 0
-                goals_text.insert(tk.END, f"{goal}: ${info['progress']:.2f}/${info['amount']:.2f} ({percent_complete:.2f}%)\n")
+                goals_text.insert(tk.END, f"{goal}: ${info['progress'][-1]:.2f}/${info['amount']:.2f} ({percent_complete:.2f}%)\n")
             goals_text.config(state=tk.DISABLED)
         else:
             no_goals = tk.Label(frame, text="No goals yet.", bg="pale goldenrod", font=("Arial", 10))
@@ -112,6 +131,7 @@ class budgetkeeperGUI:
         edit_button.pack(side=tk.LEFT, padx=5)
         create_button = tk.Button(button_frame, text="Create Goal", command=self.create_goal)
         create_button.pack(side=tk.LEFT, padx=5)
+
     def add_to_goal(self):
         """Add money to an existing goal"""
         if not self.data["goals"]:
@@ -129,12 +149,15 @@ class budgetkeeperGUI:
             return
         amount_to_add = float(amount_str)
 
-        self.data["goals"][goal_choice]["progress"] += amount_to_add
-        self.data["goals"][goal_choice]["progress_history"].append(amount_to_add)
+        if self.data["goals"][goal_choice]["progress"]:
+            self.data["goals"][goal_choice]["progress"].append(self.data["goals"][goal_choice]["progress"][-1] + amount_to_add)
+        else:
+            self.data["goals"][goal_choice]["progress"].append(amount_to_add)
+
         self.data["expenses"].append(amount_to_add)
-        self.data["expenses_history"].append(amount_to_add)
-        new_percent = (self.data["goals"][goal_choice]["progress"] / self.data["goals"][goal_choice]["amount"]) * 100
+        new_percent = (self.data["goals"][goal_choice]["progress"][-1] / self.data["goals"][goal_choice]["amount"]) * 100
         messagebox.showinfo("Success", f"Added ${amount_to_add:.2f} to {goal_choice}.\nNew progress: {new_percent:.2f}%")
+        self.saveData()
 
     def edit_goal(self):
         if not self.data["goals"]:
@@ -169,12 +192,13 @@ class budgetkeeperGUI:
             return
         change = new_progress - current_progress
         self.data["goals"][goal_choice]["amount"] = new_amount
-        self.data["goals"][goal_choice]["progress"] = new_progress
+        self.data["goals"][goal_choice]["progress"] = []
+        self.data["goals"][goal_choice]["progress"].append(new_progress)
         if change > 0:
-            self.data["goals"][goal_choice]["progress_history"].append(change)
             self.data["expenses"].append(change)
-            self.data["expenses_history"].append(change)
         messagebox.showinfo("Success", f"Goal {goal_choice} updated successfully!")
+        self.saveData()
+
     def create_goal(self):
         goal_name = simpledialog.askstring("Create Goal", "Enter the name of the new goal:")
         if goal_name is None:
@@ -189,8 +213,10 @@ class budgetkeeperGUI:
             messagebox.showerror("Invalid Input", "Please enter a valid number.")
             return
         goal_amount = float(goal_amount)
-        self.data["goals"][goal_name] = {"amount": goal_amount, "progress": 0, "progress_history": []}
+        self.data["goals"][goal_name] = {"amount": goal_amount, "progress": [0],}
         messagebox.showinfo("Success", f"New goal '{goal_name}' created with amount ${goal_amount:.2f}!")
+        self.saveData()
+
     def open_budget_window(self):
         self.create_popup_window("Budget Categories", self.budget_content)
     def budget_content(self, popup, frame):
@@ -275,7 +301,6 @@ class budgetkeeperGUI:
         if spent > 0:
             self.data["budget"][category_choice]["spent_history"].append(spent)
             self.data["expenses"].append(spent)
-            self.data["expenses_history"].append(spent)
         messagebox.showinfo("Success", f"Category {category_choice} updated successfully!")
     def create_budget(self):
         #allows you to crete a new budget catagory
@@ -349,14 +374,6 @@ class budgetkeeperGUI:
         button.pack(pady=10)
         dialog.wait_window()
         return selected
-test_dict = {"goals": {}, 
-            "budget": {},
-            "expenses": [],
-            "expenses_history": []}
-    
-root = tk.Tk()
-run = budgetkeeperGUI(root, test_dict)
-#root.mainloop()
 
 """Def budget():
 While True:

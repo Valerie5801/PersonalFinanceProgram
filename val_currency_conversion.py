@@ -83,7 +83,3 @@ def currency_conversion(root):
     #make a button to actually convert
     convert_btn = tk.Button(content_frame, text="Convert Currencies", command=conversion, font=(15))
     convert_btn.pack(pady=(25, 10))
-
-root = tk.Tk()
-currency_conversion(root)
-root.mainloop()

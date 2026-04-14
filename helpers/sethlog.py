@@ -63,17 +63,24 @@
 
 import csv
 import hashlib as hash
+import json
+import tkinter as tk
+from tkinter import simpledialog, messagebox
 
 
 fieldnames=['username','password']
 username=''
 
 
-def passcheck():
+def passcheck(root):
+
     special_chars=["`","~","!","@","#","$","%","^","&","*","(",")","'",'"',"-","_","=","+","[","]","{","}","|",";",":",",","<",".",">","/","?"]
     points=int(0)
 
-    password=input("Enter desired password:\n")
+    root.lift()
+    root.focus_force()
+
+    password=simpledialog.askstring("Password", "What would you like your password to be?", parent=root)
 
     if len(password) >= 8:
         char=True
@@ -84,8 +91,6 @@ def passcheck():
     upp = False
     low = False
     special = False
-
-
 
     for letter in password:
 
@@ -102,52 +107,42 @@ def passcheck():
             special = True
 
     if char:
-        print("your password is long enough")
         points+=1
-    else:
-        print("your password should be 8+ characters long.")
+
     if numb:
-        print("your password contains a number")
         points+=1
-    else:
-        print("For a better password add a number")
+
     if upp:
-        print("your password contains an uppercase letter")
         points+=1
-    else:
-        print("For a better password add an uppercase letter")
+
     if low:
-        print("your password contains a lowercase letter")
         points+=1
-    else:
-        print("For a better password add a lowercase letter")
+
     if special:
-        print("your password contains a special character")
         points+=1
-    else:
-        print("For a better password add a special character")
 
     if points>=5:
-        print("Congladulatuions, your password is very strong!")
+        statement = "Congladulatuions, your password is very strong!"
     elif points>=4:
-        print("goob job, your password is pretty strong.")
+        statement = "goob job, your password is pretty strong."
     elif points>=3:
-        print("Nice, your password is decent, but maybe consider improving it?")
+        statement = "Nice, your password is decent, but maybe consider improving it?"
     elif points>=2:
-        print("please improve your password it's kind of weak")
+        statement = "please improve your password it's kind of weak"
     elif points>=1:
-        print("you need to improve your password it's very weak")
+        statement = "you need to improve your password it's very weak"
     else:
-        print("Okay, I understand that having a super weak password makes it easier to log into stuff,\nbut seriously man in todays day and age hackers are every where you need to have a strong password, \nso please change it and try to learn from this experience.")
-    
+        statement = "This password sucks" 
+
     while True:
-        inp=input("Confirm password (y/n)")
+        inp = simpledialog.askstring(statement, f"Are you happy with this passowrd: {password}? (y/n)", parent=root)
         match inp:
             case 'y':
                 return password
             case 'n':
                 return passcheck()
             case _:
+                messagebox.showerror("Invalid Input", "Please enter 'y' or 'n'.")
                 continue
 
 def encrypt(password):
@@ -157,7 +152,7 @@ def encrypt(password):
     x=sha256.hexdigest()
     return x
 
-def register():
+def register(root):
     with open("documents/Users.csv", 'r+' , newline='') as csvfile:
         reader=csv.reader(csvfile)
         writer=csv.writer(csvfile)
@@ -165,40 +160,58 @@ def register():
         usernames=[]
         for line in lines:
             usernames.append(line[0])
+
+        root.lift()
+        root.focus_force()
+
         while True:
-            inp=input("What would you like your username to be?")
-            if inp in usernames:
-                print("Sorry, Username is already taken")
+            root.lift()
+            name = simpledialog.askstring("Username", "What would you like you username to be?", parent=root)
+
+            if name in usernames:
+                messagebox.showerror("Invalid Input", "That username already exists")
                 continue
             else:
                 break
-        password=passcheck()
+
+        password=passcheck(root)
         epass=encrypt(password)
-        info=[inp,epass]
+        blank_dict = {"goals": {}, "budget": {}, "expenses": [], "income":[]}
+        info=[name,epass,blank_dict]
+
+        with open("saved_dicts.json", "r+") as file:
+            try:
+                rawDict = json.load(file)
+            except:
+                rawDict = {}
+
+            rawDict[name] = blank_dict
+            file.seek(0)
+            json.dump(rawDict, file, indent=4)
 
         writer.writerow(info)
-        return inp
+        return name
 
-def login():
+def login(root):
     with open("documents/Users.csv", 'r+' , newline='') as csvfile:
         reader=csv.reader(csvfile)
-        header=next(reader)
         usernames=[]
         passwords=[]
         for line in reader:
             usernames.append(line[0])
-            passwords.append(line[1])
-            
-        
-        
+            passwords.append(line[1])     
+    
+    root.lift()
+    root.focus_force()
+
     while True:
-        usr=input("Username:\n").strip()
+        root.lift()
+        usr = simpledialog.askstring("Username", "What is your username?", parent=root)
         if usr in usernames:
             index=usernames.index(usr)
             break
         else:
-            print("No matching usernames found")
-            inp=input("would you like to continue trying to login? (y/n)")
+            inp = simpledialog.askstring("Username Not Found", "Would you like to continue trying to login? (y/n)", parent=root)
             match inp:
                 case "y":
                     continue
@@ -208,13 +221,14 @@ def login():
                     continue
     
     while True:
-        inp=input("Password:\n").strip()
+        root.lift()
+
+        inp = simpledialog.askstring("Password", "What is your password?", parent=root)
         epass=encrypt(inp)
         if epass==passwords[index]:
             return usr
         else:
-            print("Password doesn't match the password")
-            inp=input("Would you like to try log in again?\nIf you would like to recover and change your password contact us at seth.white@ucas-edu.net\n (y/n)")
+            inp = simpledialog.askstring("Incorrect Password", "Would you like to try log in again?\nIf you would like to recover and change your password contact us at seth.white@ucas-edu.net\n (y/n)", parent=root)
             match inp:
                 case 'y':
                     continue
@@ -271,6 +285,12 @@ def puldict(username):
         indx=usernames.index(username)
         dictionary=rows[indx][2]
     return dictionary
+
+# Paxton here, I had to create a new function and file because you can't save dictionaries to csv
+def get_dict(username):
+    with open("saved_dicts.json", "r") as file:
+        rawData = json.load(file)
+        return rawData[username]
 
 
 {"goals": {"New Car": {"amount": 10000, "progress":[ 7000.0]},
